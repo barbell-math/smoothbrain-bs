@@ -8,7 +8,6 @@ import "github.com/barbell-math/smoothbrain-bs"
 
 ## Index
 
-- [Constants](<#constants>)
 - [func LogErr\(fmt string, args ...any\)](<#LogErr>)
 - [func LogInfo\(fmt string, args ...any\)](<#LogInfo>)
 - [func LogPanic\(fmt string, args ...any\)](<#LogPanic>)
@@ -24,23 +23,6 @@ import "github.com/barbell-math/smoothbrain-bs"
   - [func Stage\(name string, op func\(ctxt context.Context, cmdLineArgs ...string\) error\) StageFunc](<#Stage>)
 - [type TargetFunc](<#TargetFunc>)
 
-
-## Constants
-
-<a name="MultilineIndent"></a>
-
-```go
-const (
-    // The identifier that will be printed on log lines that span for multiple
-    // lines. The output will look like the following:
-    //
-    //	<log data> <log line 1>
-    //	<log data>  |> <log line 2>
-    //	<log data>  |> <log line 3>
-    //	<log data>  ...
-    MultilineIndent = " |> "
-)
-```
 
 <a name="LogErr"></a>
 ## func [LogErr](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L83>)

@@ -34,7 +34,7 @@ const (
 	//	<log data>  |> <log line 2>
 	//	<log data>  |> <log line 3>
 	//	<log data>  ...
-	MultilineIndent = " |> "
+	multiLineIndent = " |> "
 )
 
 var (
@@ -55,7 +55,7 @@ func multiLineLog(fmtStr string, args ...any) {
 	lines := strings.Split(str, "\n")
 	log.Printf(lines[0])
 	for i := 0; i < len(lines); i++ {
-		log.Printf(MultilineIndent + lines[i])
+		log.Printf(multiLineIndent + lines[i])
 	}
 }
 
@@ -143,7 +143,7 @@ func Stage(
 			} else {
 				LogErr("Stage '%s': Encountered an error: %w", err)
 			}
-			LogQuietInfo(MultilineIndent+"Time Delta: %s", name, time.Now().Sub(start))
+			LogQuietInfo(multiLineIndent+"Time Delta: %s", name, time.Now().Sub(start))
 			return err
 		case <-ctxt.Done():
 			LogErr("Stage '%s': Encountered an error: %w", ctxt.Err())
