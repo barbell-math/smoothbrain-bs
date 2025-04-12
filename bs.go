@@ -41,7 +41,7 @@ var (
 	// The targets that are available to be called in the build system created
 	// by the user. Targets are registered here through the [RegisterTarget]
 	// function.
-	targets map[string]TargetFunc
+	targets = map[string]TargetFunc{}
 )
 
 // Logs messages, splitting multi-line message into the following format:
