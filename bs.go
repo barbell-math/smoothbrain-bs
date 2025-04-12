@@ -2,6 +2,7 @@ package sbbs
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -35,6 +36,9 @@ const (
 	//	<log data>  |> <log line 3>
 	//	<log data>  ...
 	multiLineIndent = " |> "
+
+	// The color code to restore the consoles default colors.
+	noColor = "\u001b[0m"
 )
 
 var (
@@ -42,6 +46,11 @@ var (
 	// by the user. Targets are registered here through the [RegisterTarget]
 	// function.
 	targets = map[string]TargetFunc{}
+
+	// An error that a stage can return to stop the target it is part of from
+	// further execution. This is intended to be used when other error
+	// information has been printed to the console.
+	StopErr = errors.New("Generic stop error. See log above for error details.")
 )
 
 // Logs messages, splitting multi-line message into the following format:
@@ -50,43 +59,43 @@ var (
 //	<log data>  |> <log line 2>
 //	<log data>  |> <log line 3>
 //	<log data>  ...
-func multiLineLog(fmtStr string, args ...any) {
+func multiLineLog(color string, fmtStr string, args ...any) {
 	str := fmt.Sprintf(fmtStr, args...)
 	lines := strings.Split(str, "\n")
-	log.Printf(lines[0])
+	log.Printf(color + lines[0] + noColor)
 	for i := 1; i < len(lines); i++ {
-		log.Printf(multiLineIndent + lines[i])
+		log.Printf(multiLineIndent + color + lines[i] + noColor)
 	}
 }
 
 // Logs info in cyan.
 func LogInfo(fmt string, args ...any) {
-	multiLineLog("\u001b[36m"+fmt+"\u001b[0m", args...)
+	multiLineLog("\u001b[36m", fmt, args...)
 }
 
 // Logs quiet info in gray.
 func LogQuietInfo(fmt string, args ...any) {
-	multiLineLog("\u001b[30m"+fmt+"\u001b[0m", args...)
+	multiLineLog("\u001b[90m", fmt, args...)
 }
 
 // Logs successes in green.
 func LogSuccess(fmt string, args ...any) {
-	multiLineLog("\u001b[32m"+fmt+"\u001b[0m", args...)
+	multiLineLog("\u001b[32m", fmt, args...)
 }
 
 // Logs warnings in yellow.
 func LogWarn(fmt string, args ...any) {
-	multiLineLog("\u001b[33m"+fmt+"\u001b[0m", args...)
+	multiLineLog("\u001b[33m", fmt, args...)
 }
 
 // Logs errors in red.
 func LogErr(fmt string, args ...any) {
-	multiLineLog("\u001b[31m"+fmt+"\u001b[0m", args...)
+	multiLineLog("\u001b[31m", fmt, args...)
 }
 
 // Logs errors in bold red and exits.
 func LogPanic(fmt string, args ...any) {
-	multiLineLog("\u001b[1m\u001b[31m"+fmt+"\u001b[0m", args...)
+	multiLineLog("\u001b[1m\u001b[31m", fmt, args...)
 	os.Exit(1)
 }
 
@@ -139,14 +148,14 @@ func Stage(
 		select {
 		case err := <-doneCh:
 			if err == nil {
-				LogSuccess("Stage '%s': Completed Successfully")
+				LogSuccess("Stage '%s': Completed Successfully", name)
 			} else {
-				LogErr("Stage '%s': Encountered an error: %w", err)
+				LogErr("Stage '%s': Encountered an error: %s", name, err)
 			}
-			LogQuietInfo(multiLineIndent+"Time Delta: %s", name, time.Now().Sub(start))
+			LogQuietInfo(multiLineIndent+"Time Delta: %s", time.Now().Sub(start))
 			return err
 		case <-ctxt.Done():
-			LogErr("Stage '%s': Encountered an error: %w", ctxt.Err())
+			LogErr("Stage '%s': Encountered an error: %s", name, ctxt.Err())
 			return ctxt.Err()
 		}
 	}
@@ -181,7 +190,7 @@ func Main(progName string) {
 	if len(os.Args) < 2 {
 		LogErr("Expected target to be provided.")
 		logUsage(progName)
-		LogQuietInfo("Re-run with a target")
+		LogQuietInfo("Consider: Re-runing with a target")
 		os.Exit(1)
 	}
 
@@ -189,7 +198,7 @@ func Main(progName string) {
 	if !slices.Contains(availableTargets, os.Args[1]) {
 		LogErr("An invalid target was provided")
 		logUsage(progName)
-		LogQuietInfo("Re-run with a valid target")
+		LogQuietInfo("Consider: Re-runing with a valid target")
 		os.Exit(1)
 	}
 
