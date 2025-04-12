@@ -54,7 +54,7 @@ func multiLineLog(fmtStr string, args ...any) {
 	str := fmt.Sprintf(fmtStr, args...)
 	lines := strings.Split(str, "\n")
 	log.Printf(lines[0])
-	for i := 0; i < len(lines); i++ {
+	for i := 1; i < len(lines); i++ {
 		log.Printf(multiLineIndent + lines[i])
 	}
 }
