@@ -1,3 +1,4 @@
+// A very simple build system written in 100% golang.
 package sbbs
 
 import (

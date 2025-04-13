@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gomarkdoc --output README.md .
+gomarkdoc --header-file ./headerFile.md --output README.md .
