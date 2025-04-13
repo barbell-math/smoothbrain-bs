@@ -1,4 +1,5 @@
-// A very simple build system written in 100% golang.
+// A very simple build system written in 100% golang to avoid the need to have
+// cmake as a dependency.
 package sbbs
 
 import (
