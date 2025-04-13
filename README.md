@@ -22,6 +22,8 @@ A very simple build system written in 100% golang to avoid the need to have cmak
 - [func Main\(progName string\)](<#Main>)
 - [func RegisterTarget\(ctxt context.Context, name string, stages ...StageFunc\)](<#RegisterTarget>)
 - [func Run\(ctxt context.Context, pipe io.Writer, prog string, args ...string\) error](<#Run>)
+- [func RunCwd\(ctxt context.Context, pipe io.Writer, cwd string, prog string, args ...string\) error](<#RunCwd>)
+- [func RunCwdStdout\(ctxt context.Context, cwd string, prog string, args ...string\) error](<#RunCwdStdout>)
 - [func RunStdout\(ctxt context.Context, prog string, args ...string\) error](<#RunStdout>)
 - [func RunTarget\(ctxt context.Context, target string, cmdLineArgs ...string\)](<#RunTarget>)
 - [type StageFunc](<#StageFunc>)
@@ -99,7 +101,7 @@ func LogWarn(fmt string, args ...any)
 Logs warnings in yellow.
 
 <a name="Main"></a>
-## func [Main](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L223>)
+## func [Main](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L255>)
 
 ```go
 func Main(progName string)
@@ -108,7 +110,7 @@ func Main(progName string)
 The main function that runs the build system. This is intended to be called by the \`main\` function of any code that uses this library.
 
 <a name="RegisterTarget"></a>
-## func [RegisterTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L202>)
+## func [RegisterTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L234>)
 
 ```go
 func RegisterTarget(ctxt context.Context, name string, stages ...StageFunc)
@@ -117,25 +119,43 @@ func RegisterTarget(ctxt context.Context, name string, stages ...StageFunc)
 Registers a new build target to the build system. When run, the new target will sequentially run all provided stages, stopping if an error is encountered.
 
 <a name="Run"></a>
-## func [Run](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L112>)
+## func [Run](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L145-L150>)
 
 ```go
 func Run(ctxt context.Context, pipe io.Writer, prog string, args ...string) error
 ```
 
+Runs the program with the specified \`args\` using the supplied context in the current working directory. The supplied pipe will be used to capture Stdout. Stderr will always be printed to the console.
+
+<a name="RunCwd"></a>
+## func [RunCwd](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L112-L118>)
+
+```go
+func RunCwd(ctxt context.Context, pipe io.Writer, cwd string, prog string, args ...string) error
+```
+
 Runs the program with the specified \`args\` using the supplied context. The supplied pipe will be used to capture Stdout. Stderr will always be printed to the console.
 
+<a name="RunCwdStdout"></a>
+## func [RunCwdStdout](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L157-L162>)
+
+```go
+func RunCwdStdout(ctxt context.Context, cwd string, prog string, args ...string) error
+```
+
+Runs the program with the specified \`args\` using the supplied context. All output of the program will be printed to stdout. Equivalent to calling [Run](<#Run>) and providing [os.Stdout](<https://pkg.go.dev/os/#Stdout>) for the \`pipe\` argument.
+
 <a name="RunStdout"></a>
-## func [RunStdout](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L138>)
+## func [RunStdout](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L170>)
 
 ```go
 func RunStdout(ctxt context.Context, prog string, args ...string) error
 ```
 
-Runs the program with the specified \`args\` using the supplied context. All output of the program will be printed to stdout. Equivalent to calling [Run](<#Run>) and providing [os.Stdout](<https://pkg.go.dev/os/#Stdout>) for the \`pipe\` argument.
+Runs the program with the specified \`args\` using the supplied context in the current working directory. All output of the program will be printed to stdout. Equivalent to calling [Run](<#Run>) and providing [os.Stdout](<https://pkg.go.dev/os/#Stdout>) for the \`pipe\` argument.
 
 <a name="RunTarget"></a>
-## func [RunTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L145>)
+## func [RunTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L177>)
 
 ```go
 func RunTarget(ctxt context.Context, target string, cmdLineArgs ...string)
@@ -153,7 +173,7 @@ type StageFunc func(ctxt context.Context, cmdLineArgs ...string) error
 ```
 
 <a name="Stage"></a>
-### func [Stage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L157-L160>)
+### func [Stage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L189-L192>)
 
 ```go
 func Stage(name string, op func(ctxt context.Context, cmdLineArgs ...string) error) StageFunc
@@ -162,7 +182,7 @@ func Stage(name string, op func(ctxt context.Context, cmdLineArgs ...string) err
 Creates a stage that can be added to a build target. Stages define the operations that will take place when a build target is executing. The supplied context can be modified and passed to [Run](<#Run>) functions to deterministically control how long various operations take. This prevents builds from hanging forever.
 
 <a name="TargetAsStage"></a>
-### func [TargetAsStage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L189>)
+### func [TargetAsStage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L221>)
 
 ```go
 func TargetAsStage(target string) StageFunc

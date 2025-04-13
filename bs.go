@@ -109,9 +109,16 @@ func LogPanic(fmt string, args ...any) {
 // Runs the program with the specified `args` using the supplied context. The
 // supplied pipe will be used to capture Stdout. Stderr will always be printed
 // to the console.
-func Run(ctxt context.Context, pipe io.Writer, prog string, args ...string) error {
+func RunCwd(
+	ctxt context.Context,
+	pipe io.Writer,
+	cwd string,
+	prog string,
+	args ...string,
+) error {
 	var cmd *exec.Cmd
 	cmd = exec.CommandContext(ctxt, prog, args...)
+	cmd.Dir = cwd
 	cmd.Stdout = pipe
 	cmd.Stderr = os.Stderr
 
@@ -132,11 +139,36 @@ func Run(ctxt context.Context, pipe io.Writer, prog string, args ...string) erro
 	return nil
 }
 
+// Runs the program with the specified `args` using the supplied context in the
+// current working directory. The supplied pipe will be used to capture Stdout.
+// Stderr will always be printed to the console.
+func Run(
+	ctxt context.Context,
+	pipe io.Writer,
+	prog string,
+	args ...string,
+) error {
+	return RunCwd(ctxt, pipe, "", prog, args...)
+}
+
 // Runs the program with the specified `args` using the supplied context. All
 // output of the program will be printed to stdout. Equivalent to calling [Run]
 // and providing [os.Stdout] for the `pipe` argument.
+func RunCwdStdout(
+	ctxt context.Context,
+	cwd string,
+	prog string,
+	args ...string,
+) error {
+	return RunCwd(ctxt, os.Stdout, cwd, prog, args...)
+}
+
+// Runs the program with the specified `args` using the supplied context in the
+// current working directory. All output of the program will be printed to
+// stdout. Equivalent to calling [Run] and providing [os.Stdout] for the `pipe`
+// argument.
 func RunStdout(ctxt context.Context, prog string, args ...string) error {
-	return Run(ctxt, os.Stdout, prog, args...)
+	return RunCwd(ctxt, os.Stdout, "", prog, args...)
 }
 
 // Runs the supplied target, given that the supplied target is present in the
