@@ -87,10 +87,7 @@ func main() {
 			"Run gomarkdoc",
 			func(ctxt context.Context, cmdLineArgs ...string) error {
 				err := sbbs.RunStdout(
-					ctxt, "gomarkdoc",
-					"--embed",
-					"--header-file", "./bs/readmeHeaderFile.md",
-					"--output", "README.md", ".",
+					ctxt, "gomarkdoc", "--embed", "--output", "README.md", ".",
 				)
 				if err != nil {
 					sbbs.LogQuietInfo("Consider running build system with installGoMarkDoc target if gomarkdoc is not installed")
