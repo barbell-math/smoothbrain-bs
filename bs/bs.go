@@ -168,7 +168,7 @@ func main() {
 		sbbs.TargetAsStage("ciCheckFmt"),
 		sbbs.TargetAsStage("ciCheckReadme"),
 		sbbs.TargetAsStage("ciCheckDeps"),
-		sbbs.TargetAsStage("unitTests"),
+		// sbbs.TargetAsStage("unitTests"),	 -- There are no unit tests
 	)
 
 	sbbs.Main("build")
