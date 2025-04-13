@@ -60,7 +60,12 @@ var (
 //	<log data>  |> <log line 3>
 //	<log data>  ...
 func multiLineLog(color string, fmtStr string, args ...any) {
-	str := fmt.Sprintf(fmtStr, args...)
+	// This is a dumb hack to get arround any errors that look like the following:
+	// bs/bs.go:20:17: non-constant format string in call to github.com/barbell-math/smoothbrain-bs.LogErr
+	// See also: https://github.com/kubernetes/kubernetes/issues/127191
+	_fmtStr := fmtStr
+
+	str := fmt.Sprintf(_fmtStr, args...)
 	lines := strings.Split(str, "\n")
 	log.Printf(color + lines[0] + noColor)
 	for i := 1; i < len(lines); i++ {
@@ -107,7 +112,22 @@ func Run(ctxt context.Context, pipe io.Writer, prog string, args ...string) erro
 	cmd = exec.CommandContext(ctxt, prog, args...)
 	cmd.Stdout = pipe
 	cmd.Stderr = os.Stderr
-	return cmd.Run()
+
+	LogQuietInfo("Running: '%s'", cmd.String())
+	err := cmd.Run()
+	if err != nil {
+		return err
+	}
+
+	if cmd.ProcessState.ExitCode() != 0 {
+		LogErr(
+			"The process exited with a non-zero exit code: %d",
+			cmd.ProcessState.ExitCode(),
+		)
+		return StopErr
+	}
+
+	return nil
 }
 
 // Runs the program with the specified `args` using the supplied context. All
@@ -161,6 +181,19 @@ func Stage(
 	}
 }
 
+// Runs the supplied target as though it were a stage, given that the supplied
+// target is preset in the build systems target list. Execution of all further
+// targets/stages will stop if running the supplied target fails.
+func TargetAsStage(target string) StageFunc {
+	return Stage(
+		fmt.Sprintf("target:%s", target),
+		func(ctxt context.Context, cmdLineArgs ...string) error {
+			RunTarget(ctxt, target, cmdLineArgs...)
+			return nil
+		},
+	)
+}
+
 // Registers a new build target to the build system. When run, the new target
 // will sequentially run all provided stages, stopping if an error is
 // encountered.
@@ -179,7 +212,7 @@ func RegisterTarget(ctxt context.Context, name string, stages ...StageFunc) {
 
 func logUsage(progName string) {
 	LogInfo("Usage:")
-	LogInfo("\t./%s [target] [target specific args...]", progName)
+	LogInfo("\t./%s [target | -h | --help] [target specific args...]", progName)
 	LogInfo("\tValid targets: %v", slices.Collect(maps.Keys(targets)))
 }
 
@@ -187,6 +220,11 @@ func logUsage(progName string) {
 // by the `main` function of any code that uses this library.
 func Main(progName string) {
 	log.SetPrefix("smoothbrain-bs | ")
+	if len(os.Args) == 2 && slices.Contains([]string{"-h", "--help"}, strings.ToLower(os.Args[1])) {
+		logUsage(progName)
+		LogQuietInfo("Consider: Re-runing with a target")
+		os.Exit(1)
+	}
 	if len(os.Args) < 2 {
 		LogErr("Expected target to be provided.")
 		logUsage(progName)
