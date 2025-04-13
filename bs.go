@@ -244,32 +244,34 @@ func RegisterTarget(ctxt context.Context, name string, stages ...StageFunc) {
 	}
 }
 
-func logUsage(progName string) {
+func logUsage(progName string, availableTargets []string) {
+	slices.Sort(availableTargets)
 	LogInfo("Usage:")
-	LogInfo("\t./%s [target | -h | --help] [target specific args...]", progName)
-	LogInfo("\tValid targets: %v", slices.Collect(maps.Keys(targets)))
+	LogInfo("\t%s [target | -h | --help] [target specific args...]", progName)
+	LogInfo("\tValid targets: %v", availableTargets)
 }
 
 // The main function that runs the build system. This is intended to be called
 // by the `main` function of any code that uses this library.
 func Main(progName string) {
 	log.SetPrefix("smoothbrain-bs | ")
+	availableTargets := slices.Collect(maps.Keys(targets))
+
 	if len(os.Args) == 2 && slices.Contains([]string{"-h", "--help"}, strings.ToLower(os.Args[1])) {
-		logUsage(progName)
+		logUsage(progName, availableTargets)
 		LogQuietInfo("Consider: Re-runing with a target")
 		os.Exit(1)
 	}
 	if len(os.Args) < 2 {
 		LogErr("Expected target to be provided.")
-		logUsage(progName)
+		logUsage(progName, availableTargets)
 		LogQuietInfo("Consider: Re-runing with a target")
 		os.Exit(1)
 	}
 
-	availableTargets := slices.Collect(maps.Keys(targets))
 	if !slices.Contains(availableTargets, os.Args[1]) {
 		LogErr("An invalid target was provided")
-		logUsage(progName)
+		logUsage(progName, availableTargets)
 		LogQuietInfo("Consider: Re-runing with a valid target")
 		os.Exit(1)
 	}

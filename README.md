@@ -101,7 +101,7 @@ func LogWarn(fmt string, args ...any)
 Logs warnings in yellow.
 
 <a name="Main"></a>
-## func [Main](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L255>)
+## func [Main](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L256>)
 
 ```go
 func Main(progName string)
