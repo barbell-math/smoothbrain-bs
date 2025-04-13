@@ -202,7 +202,7 @@ func RegisterTarget(ctxt context.Context, name string, stages ...StageFunc) {
 		LogPanic("Duplicate target name: %s", name)
 	}
 	targets[name] = func(cmdLineArgs ...string) {
-		for i, _ := range stages {
+		for i := range stages {
 			if err := stages[i](ctxt, cmdLineArgs...); err != nil {
 				LogPanic("An error was encountered, exiting.")
 			}
