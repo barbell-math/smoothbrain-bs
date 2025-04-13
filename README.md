@@ -195,7 +195,7 @@ For examples of using this build system refer to the following repositories:
 
 ## Helpful Developer Cmds
 
-To build the build system:
+To build the build system the first time:
 
 ```
 go build -o ./bs/bs ./bs
@@ -205,4 +205,5 @@ The build system can then be used as usual:
 
 ```
 ./bs/bs --help
+./bs/bs buildBs # builds the build system!
 ```

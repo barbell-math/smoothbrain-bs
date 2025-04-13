@@ -129,6 +129,16 @@ func main() {
 			},
 		),
 	)
+	sbbs.RegisterTarget(
+		context.Background(),
+		"buildBs",
+		sbbs.Stage(
+			"Run go build",
+			func(ctxt context.Context, cmdLineArgs ...string) error {
+				return sbbs.RunStdout(ctxt, "go", "build", "-o", "./bs/bs", "./bs")
+			},
+		),
+	)
 
 	// Registers a target that will update all deps and run a diff to make sure
 	// that the commited code is using all of the correct dependencies.
