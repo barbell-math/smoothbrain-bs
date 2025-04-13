@@ -88,6 +88,7 @@ func main() {
 			func(ctxt context.Context, cmdLineArgs ...string) error {
 				err := sbbs.RunStdout(
 					ctxt, "gomarkdoc",
+					"--embed",
 					"--header-file", "./bs/readmeHeaderFile.md",
 					"--output", "README.md", ".",
 				)
