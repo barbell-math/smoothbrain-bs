@@ -3,10 +3,12 @@
 package sbbs
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"maps"
 	"os"
@@ -104,6 +106,60 @@ func LogErr(fmt string, args ...any) {
 func LogPanic(fmt string, args ...any) {
 	multiLineLog("\u001b[1m\u001b[31m", fmt, args...)
 	os.Exit(1)
+}
+
+// A helpful utility function that creates a file and logs the file's path.
+func CreateFile(name string) (*os.File, error) {
+	LogQuietInfo("Creating and Opening File: '%s'", name)
+	return os.Create(name)
+}
+
+// A helpful utility function that opens a file and logs the file's path.
+func Open(name string) (*os.File, error) {
+	LogQuietInfo("Opening File: '%s'", name)
+	return os.Open(name)
+}
+
+// A helpful utility function that creates but does not open a file and logs the
+// file's path.
+func Touch(name string) error {
+	LogQuietInfo("Creating File: '%s'", name)
+	f, err := os.Create(name)
+	defer f.Close()
+	return err
+}
+
+// A helpful utility function that creates the supplied directory as well as all
+// necessary parent directories.
+func Mkdir(path string) error {
+	LogQuietInfo("Creating Dir(s): '%s'", path)
+	return os.MkdirAll(path, 0755)
+}
+
+// A helpful utility function that changes the programs current working
+// directory and logs the old and new current working directories.
+func Cd(dir string) error {
+	old, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	LogQuietInfo("Previous Cwd: '%s'", old)
+
+	err = os.Chdir(dir)
+	if err != nil {
+		return err
+	}
+	LogQuietInfo("New Cwd: '%s'", dir)
+	return nil
+}
+
+// A helpful utility function that runs `git rev-parse --show-toplevel` and
+// returns the stdout. This is often useful when attempting to change the
+// current working directory to a repositories root directory.
+func GitRevParse(ctxt context.Context, cwd string) (string, error) {
+	var buf bytes.Buffer
+	err := Run(ctxt, &buf, cwd, "git", "rev-parse", "--show-toplevel")
+	return buf.String(), err
 }
 
 // Runs the program with the specified `args` using the supplied context. The
@@ -212,6 +268,24 @@ func Stage(
 			LogErr("Stage '%s': Encountered an error: %s", name, ctxt.Err())
 			return ctxt.Err()
 		}
+	}
+}
+
+// Changes the current working directory to the repositories root directory if
+// the current working directory is inside a repo. Results in an error if the
+// current working directory is not inside a repo.
+func CdToRepoRoot() StageFunc {
+	return func(ctxt context.Context, cmdLineArgs ...string) error {
+		cwd, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+		root, err := GitRevParse(ctxt, cwd)
+		if err != nil {
+			return err
+		}
+
+		return Cd(root)
 	}
 }
 
