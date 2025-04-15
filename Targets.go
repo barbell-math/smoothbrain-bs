@@ -86,7 +86,7 @@ func RegisterUpdateDepsTarget() {
 				}
 				if strings.Contains(
 					strings.TrimSpace(buf.String()),
-					"+github.com/barbell-math/smoothbrain-bs",
+					"github.com/barbell-math/smoothbrain-bs",
 				) {
 					LogWarn("The build system package was upgraded!")
 					LogWarn("It is recommended to rebuild your projects build system after this command completes.")
