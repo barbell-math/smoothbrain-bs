@@ -36,6 +36,7 @@ A very simple build system written in 100% golang to avoid the need to have cmak
 - [func RunCwdStdout\(ctxt context.Context, cwd string, prog string, args ...string\) error](<#RunCwdStdout>)
 - [func RunStdout\(ctxt context.Context, prog string, args ...string\) error](<#RunStdout>)
 - [func RunTarget\(ctxt context.Context, target string, cmdLineArgs ...string\)](<#RunTarget>)
+- [func TmpEnvVarSet\(name string, val string\) \(reset func\(\) error, err error\)](<#TmpEnvVarSet>)
 - [func Touch\(name string\) error](<#Touch>)
 - [type MergegateTargets](<#MergegateTargets>)
 - [type StageFunc](<#StageFunc>)
@@ -60,22 +61,22 @@ var (
 ```
 
 <a name="Cd"></a>
-## func [Cd](<https://github.com/barbell-math/smoothbrain-bs/blob/main/FS.go#L35>)
+## func [Cd](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L37>)
 
 ```go
 func Cd(dir string) error
 ```
 
-A helpful utility function that changes the programs current working directory and logs the old and new current working directories.
+A utility function that changes the programs current working directory and logs the old and new current working directories.
 
 <a name="CreateFile"></a>
-## func [CreateFile](<https://github.com/barbell-math/smoothbrain-bs/blob/main/FS.go#L6>)
+## func [CreateFile](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L8>)
 
 ```go
 func CreateFile(name string) (*os.File, error)
 ```
 
-A helpful utility function that creates a file and logs the file's path.
+A utility function that creates a file and logs the file's path.
 
 <a name="GitRevParse"></a>
 ## func [GitRevParse](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Run.go#L90>)
@@ -150,22 +151,22 @@ func Main(progName string)
 The main function that runs the build system. This is intended to be called by the \`main\` function of any code that uses this library.
 
 <a name="Mkdir"></a>
-## func [Mkdir](<https://github.com/barbell-math/smoothbrain-bs/blob/main/FS.go#L28>)
+## func [Mkdir](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L30>)
 
 ```go
 func Mkdir(path string) error
 ```
 
-A helpful utility function that creates the supplied directory as well as all necessary parent directories.
+A utility function that creates the supplied directory as well as all necessary parent directories.
 
 <a name="Open"></a>
-## func [Open](<https://github.com/barbell-math/smoothbrain-bs/blob/main/FS.go#L12>)
+## func [Open](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L14>)
 
 ```go
 func Open(name string) (*os.File, error)
 ```
 
-A helpful utility function that opens a file and logs the file's path.
+A utility function that opens a file and logs the file's path.
 
 <a name="RegisterBsBuildTarget"></a>
 ## func [RegisterBsBuildTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L11>)
@@ -177,7 +178,7 @@ func RegisterBsBuildTarget()
 Registers a target that rebuilds the build system. This is often useful when changes are made to the build system of a project.
 
 <a name="RegisterCommonGoCmdTargets"></a>
-## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L117>)
+## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L137>)
 
 ```go
 func RegisterCommonGoCmdTargets()
@@ -190,7 +191,7 @@ Registers three targets:
 3. The third runs go test and runs all benchmarks
 
 <a name="RegisterGoMarkDocTargets"></a>
-## func [RegisterGoMarkDocTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L78>)
+## func [RegisterGoMarkDocTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L98>)
 
 ```go
 func RegisterGoMarkDocTargets()
@@ -202,7 +203,7 @@ Registers two targets:
 2. The second target will install gomarkdoc using go intstall
 
 <a name="RegisterMergegateTarget"></a>
-## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L175>)
+## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L195>)
 
 ```go
 func RegisterMergegateTarget(a MergegateTargets)
@@ -220,13 +221,15 @@ func RegisterTarget(ctxt context.Context, name string, stages ...StageFunc)
 Registers a new build target to the build system. When run, the new target will sequentially run all provided stages, stopping if an error is encountered.
 
 <a name="RegisterUpdateDepsTarget"></a>
-## func [RegisterUpdateDepsTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L27>)
+## func [RegisterUpdateDepsTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L33>)
 
 ```go
 func RegisterUpdateDepsTarget()
 ```
 
 Registers a target that updates all dependences. Dependencies that are in the \`barbell\-math\` repo will always be pinned at latest and all other dependencies will be updated to the latest version.
+
+This target takes one optional cmd line argument: \`force\`. This argument only applies to barbell\-math packages. If force is supplied then any caching that \`go get\` provides will be bypassed and the absoulte latest version of all barbell\-math packages will be fetched. This will take longer than if force is not supplied.
 
 <a name="Run"></a>
 ## func [Run](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Run.go#L48-L53>)
@@ -273,17 +276,26 @@ func RunTarget(ctxt context.Context, target string, cmdLineArgs ...string)
 
 Runs the supplied target, given that the supplied target is present in the build systems target list. Execution of all further targets/stages will stop if running the supplied target fails.
 
+<a name="TmpEnvVarSet"></a>
+## func [TmpEnvVarSet](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L57>)
+
+```go
+func TmpEnvVarSet(name string, val string) (reset func() error, err error)
+```
+
+A utility function that changes the supplied env variable to the supplied value, returning a closure that can be used to set the env variable back to it's original value. If the supplied env variable did not exist before calling this function then the returned closure will remove the env variable instead of reseting it to it's original value.
+
 <a name="Touch"></a>
-## func [Touch](<https://github.com/barbell-math/smoothbrain-bs/blob/main/FS.go#L19>)
+## func [Touch](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L21>)
 
 ```go
 func Touch(name string) error
 ```
 
-A helpful utility function that creates but does not open a file and logs the file's path.
+A utility function that creates but does not open a file and logs the file's path.
 
 <a name="MergegateTargets"></a>
-## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L156-L170>)
+## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L176-L190>)
 
 Defines all possible stages that can run in a mergegate target.
 
