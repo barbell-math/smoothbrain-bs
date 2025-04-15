@@ -57,6 +57,10 @@ func RegisterUpdateDepsTarget() {
 					); err != nil {
 						return err
 					}
+					if iterPackage[0] == "github.com/barbell-math/smoothbrain-bs" {
+						LogWarn("The build system package was upgraded!")
+						LogWarn("It is recommended to rebuild your projects build system after this command completes.")
+					}
 				}
 
 				return reset()
