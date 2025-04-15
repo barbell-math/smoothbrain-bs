@@ -79,12 +79,14 @@ func RegisterUpdateDepsTarget() {
 			"Check if bs updated",
 			func(ctxt context.Context, cmdLineArgs ...string) error {
 				var buf bytes.Buffer
-				if err := Run(ctxt, &buf, "git", "diff", "go.mod"); err != nil {
+				if err := Run(
+					ctxt, &buf, "git", "diff", "--unified=0", "go.mod",
+				); err != nil {
 					return err
 				}
 				if strings.Contains(
 					strings.TrimSpace(buf.String()),
-					"github.com/barbell-math/smoothbrain-bs",
+					"+github.com/barbell-math/smoothbrain-bs",
 				) {
 					LogWarn("The build system package was upgraded!")
 					LogWarn("It is recommended to rebuild your projects build system after this command completes.")
