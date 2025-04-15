@@ -63,7 +63,7 @@ func RegisterUpdateDepsTarget() {
 					}
 
 					if err := RunStdout(
-						ctxt, "GOPROXY=direct", "go", "get", iterPackage[0]+"@latest",
+						ctxt, "go", "get", iterPackage[0]+"@latest",
 					); err != nil {
 						return err
 					}
