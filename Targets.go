@@ -57,10 +57,6 @@ func RegisterUpdateDepsTarget() {
 					); err != nil {
 						return err
 					}
-					if iterPackage[0] == "github.com/barbell-math/smoothbrain-bs" {
-						LogWarn("The build system package was upgraded!")
-						LogWarn("It is recommended to rebuild your projects build system after this command completes.")
-					}
 				}
 
 				return reset()
@@ -76,6 +72,23 @@ func RegisterUpdateDepsTarget() {
 					return err
 				}
 
+				return nil
+			},
+		),
+		Stage(
+			"Check if bs updated",
+			func(ctxt context.Context, cmdLineArgs ...string) error {
+				var buf bytes.Buffer
+				if err := Run(ctxt, &buf, "git", "diff", "go.mod"); err != nil {
+					return err
+				}
+				if strings.Contains(
+					strings.TrimSpace(buf.String()),
+					"github.com/barbell-math/smoothbrain-bs",
+				) {
+					LogWarn("The build system package was upgraded!")
+					LogWarn("It is recommended to rebuild your projects build system after this command completes.")
+				}
 				return nil
 			},
 		),
