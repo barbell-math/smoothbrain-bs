@@ -135,46 +135,61 @@ func RegisterGoMarkDocTargets() {
 	)
 }
 
-// Registers three targets:
-//  1. The first runs go fmt
-//  2. The second runs go test without running any benchmarks
-//  3. The third runs go test and runs all benchmarks
-func RegisterCommonGoCmdTargets() {
-	RegisterTarget(
-		context.Background(),
-		"fmt",
-		CdToRepoRoot(),
-		Stage(
-			"Run go fmt",
-			func(ctxt context.Context, cmdLineArgs ...string) error {
-				return RunStdout(ctxt, "go", "fmt", "./...")
-			},
-		),
-	)
+// Defines the available targets that can be added by
+// [RegisterCommonGoCmdTargets].
+type GoTargets struct {
+	// When true a target will be added that runs `go test ./...`
+	GenericTestTarget bool
+	// When true a target will be added that runs `go test -bench=. ./...`
+	GenericBenchTarget bool
+	// When true a target will be added that runs `go fmt ./...`
+	GenericFmtTarget bool
+}
 
-	RegisterTarget(
-		context.Background(),
-		"test",
-		CdToRepoRoot(),
-		Stage(
-			"Run go test",
-			func(ctxt context.Context, cmdLineArgs ...string) error {
-				return RunStdout(ctxt, "go", "test", "-v", "./...")
-			},
-		),
-	)
+// Registers some common go cmds as targets. See the [MergegateTargets] struct
+// for details about the available targets that can be added.
+func RegisterCommonGoCmdTargets(g GoTargets) {
+	if g.GenericFmtTarget {
+		RegisterTarget(
+			context.Background(),
+			"fmt",
+			CdToRepoRoot(),
+			Stage(
+				"Run go fmt",
+				func(ctxt context.Context, cmdLineArgs ...string) error {
+					return RunStdout(ctxt, "go", "fmt", "./...")
+				},
+			),
+		)
+	}
 
-	RegisterTarget(
-		context.Background(),
-		"bench",
-		CdToRepoRoot(),
-		Stage(
-			"Run go test",
-			func(ctxt context.Context, cmdLineArgs ...string) error {
-				return RunStdout(ctxt, "go", "test", "-bench=.", "-v", "./...")
-			},
-		),
-	)
+	if g.GenericTestTarget {
+		RegisterTarget(
+			context.Background(),
+			"test",
+			CdToRepoRoot(),
+			Stage(
+				"Run go test",
+				func(ctxt context.Context, cmdLineArgs ...string) error {
+					return RunStdout(ctxt, "go", "test", "-v", "./...")
+				},
+			),
+		)
+	}
+
+	if g.GenericBenchTarget {
+		RegisterTarget(
+			context.Background(),
+			"bench",
+			CdToRepoRoot(),
+			Stage(
+				"Run go test",
+				func(ctxt context.Context, cmdLineArgs ...string) error {
+					return RunStdout(ctxt, "go", "test", "-bench=.", "-v", "./...")
+				},
+			),
+		)
+	}
 }
 
 // Defines all possible stages that can run in a mergegate target.
