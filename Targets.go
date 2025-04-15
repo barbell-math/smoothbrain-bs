@@ -204,11 +204,11 @@ func RegisterMergegateTarget(a MergegateTargets) {
 	}
 
 	stages := []StageFunc{}
-	if a.CheckDepsUpdated {
+	if a.CheckFmt {
 		stages = append(
 			stages,
-			TargetAsStage("updateDeps"),
-			gitDiffStage("Out of date packages were detected", "updateDeps"),
+			TargetAsStage("fmt"),
+			gitDiffStage("Fix formatting to get a passing run!", "fmt"),
 		)
 	}
 	if a.CheckReadmeGomarkdoc {
@@ -219,15 +219,15 @@ func RegisterMergegateTarget(a MergegateTargets) {
 			gitDiffStage("Readme is out of date", "gomarkdocReadme"),
 		)
 	}
-	if a.CheckFmt {
+	if a.CheckDepsUpdated {
 		stages = append(
 			stages,
-			TargetAsStage("fmt"),
-			gitDiffStage("Fix formatting to get a passing run!", "fmt"),
+			TargetAsStage("updateDeps"),
+			gitDiffStage("Out of date packages were detected", "updateDeps"),
 		)
 	}
 	if a.CheckUnitTests {
-		stages = append(stages, TargetAsStage("unitTests"))
+		stages = append(stages, TargetAsStage("test"))
 	}
 
 	RegisterTarget(context.Background(), "mergegate", stages...)
