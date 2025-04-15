@@ -24,12 +24,6 @@ func RegisterBsBuildTarget() {
 // Registers a target that updates all dependences. Dependencies that are in
 // the `barbell-math` repo will always be pinned at latest and all other
 // dependencies will be updated to the latest version.
-//
-// This target takes one optional cmd line argument: `force`. This argument only
-// applies to barbell-math packages. If force is supplied then any caching that
-// `go get` provides will be bypassed and the absoulte latest version of all
-// barbell-math packages will be fetched. This will take longer than if force
-// is not supplied.
 func RegisterUpdateDepsTarget() {
 	RegisterTarget(
 		context.Background(),
@@ -45,13 +39,9 @@ func RegisterUpdateDepsTarget() {
 					return err
 				}
 
-				var reset func() error
-				if len(cmdLineArgs) > 0 && strings.ToLower(cmdLineArgs[0]) == "force" {
-					_reset, err := TmpEnvVarSet("GOPROXY", "direct")
-					if err != nil {
-						return err
-					}
-					reset = _reset
+				reset, err := TmpEnvVarSet("GOPROXY", "direct")
+				if err != nil {
+					return err
 				}
 
 				lines := strings.Split(packages.String(), "\n")
@@ -69,11 +59,7 @@ func RegisterUpdateDepsTarget() {
 					}
 				}
 
-				if len(cmdLineArgs) > 0 && strings.ToLower(cmdLineArgs[0]) == "force" {
-					return reset()
-				}
-
-				return nil
+				return reset()
 			},
 		),
 		Stage(
