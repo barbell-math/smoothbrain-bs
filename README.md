@@ -178,7 +178,7 @@ func RegisterBsBuildTarget()
 Registers a target that rebuilds the build system. This is often useful when changes are made to the build system of a project.
 
 <a name="RegisterCommonGoCmdTargets"></a>
-## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L137>)
+## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L123>)
 
 ```go
 func RegisterCommonGoCmdTargets()
@@ -191,7 +191,7 @@ Registers three targets:
 3. The third runs go test and runs all benchmarks
 
 <a name="RegisterGoMarkDocTargets"></a>
-## func [RegisterGoMarkDocTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L98>)
+## func [RegisterGoMarkDocTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L84>)
 
 ```go
 func RegisterGoMarkDocTargets()
@@ -203,7 +203,7 @@ Registers two targets:
 2. The second target will install gomarkdoc using go intstall
 
 <a name="RegisterMergegateTarget"></a>
-## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L195>)
+## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L181>)
 
 ```go
 func RegisterMergegateTarget(a MergegateTargets)
@@ -221,15 +221,13 @@ func RegisterTarget(ctxt context.Context, name string, stages ...StageFunc)
 Registers a new build target to the build system. When run, the new target will sequentially run all provided stages, stopping if an error is encountered.
 
 <a name="RegisterUpdateDepsTarget"></a>
-## func [RegisterUpdateDepsTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L33>)
+## func [RegisterUpdateDepsTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L27>)
 
 ```go
 func RegisterUpdateDepsTarget()
 ```
 
 Registers a target that updates all dependences. Dependencies that are in the \`barbell\-math\` repo will always be pinned at latest and all other dependencies will be updated to the latest version.
-
-This target takes one optional cmd line argument: \`force\`. This argument only applies to barbell\-math packages. If force is supplied then any caching that \`go get\` provides will be bypassed and the absoulte latest version of all barbell\-math packages will be fetched. This will take longer than if force is not supplied.
 
 <a name="Run"></a>
 ## func [Run](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Run.go#L48-L53>)
@@ -295,7 +293,7 @@ func Touch(name string) error
 A utility function that creates but does not open a file and logs the file's path.
 
 <a name="MergegateTargets"></a>
-## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L176-L190>)
+## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L162-L176>)
 
 Defines all possible stages that can run in a mergegate target.
 
