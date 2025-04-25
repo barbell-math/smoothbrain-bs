@@ -47,6 +47,9 @@ func RegisterTarget(ctxt context.Context, name string, stages ...StageFunc) {
 	targets[name] = func(cmdLineArgs ...string) {
 		for i := range stages {
 			if err := stages[i](ctxt, cmdLineArgs...); err != nil {
+				// Note that the error was already printed out by the stage, it
+				// does not need to be printed out here. It is meerly returned
+				// to indicate if execution of the target should stop.
 				LogPanic("An error was encountered, exiting.")
 			}
 		}

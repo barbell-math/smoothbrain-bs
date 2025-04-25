@@ -399,5 +399,5 @@ The build system can then be used as usual:
 
 ```
 ./bs/bs --help
-./bs/bs buildBs # builds the build system!
+./bs/bs buildbs # builds the build system!
 ```
