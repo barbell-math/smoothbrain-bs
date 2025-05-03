@@ -29,6 +29,7 @@ A very simple build system written in 100% golang to avoid the need to have cmak
 - [func RegisterCommonGoCmdTargets\(g GoTargets\)](<#RegisterCommonGoCmdTargets>)
 - [func RegisterGoMarkDocTargets\(\)](<#RegisterGoMarkDocTargets>)
 - [func RegisterMergegateTarget\(a MergegateTargets\)](<#RegisterMergegateTarget>)
+- [func RegisterSqlcTargets\(\)](<#RegisterSqlcTargets>)
 - [func RegisterTarget\(ctxt context.Context, name string, stages ...StageFunc\)](<#RegisterTarget>)
 - [func RegisterUpdateDepsTarget\(\)](<#RegisterUpdateDepsTarget>)
 - [func Run\(ctxt context.Context, pipe io.Writer, prog string, args ...string\) error](<#Run>)
@@ -62,7 +63,7 @@ var (
 ```
 
 <a name="Cd"></a>
-## func [Cd](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L37>)
+## func [Cd](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L37>)
 
 ```go
 func Cd(dir string) error
@@ -71,7 +72,7 @@ func Cd(dir string) error
 A utility function that changes the programs current working directory and logs the old and new current working directories.
 
 <a name="CreateFile"></a>
-## func [CreateFile](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L8>)
+## func [CreateFile](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L8>)
 
 ```go
 func CreateFile(name string) (*os.File, error)
@@ -80,7 +81,7 @@ func CreateFile(name string) (*os.File, error)
 A utility function that creates a file and logs the file's path.
 
 <a name="GitRevParse"></a>
-## func [GitRevParse](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Run.go#L90>)
+## func [GitRevParse](<https://github.com/barbell-math/smoothbrain-bs/blob/main/run.go#L90>)
 
 ```go
 func GitRevParse(ctxt context.Context) (string, error)
@@ -89,7 +90,7 @@ func GitRevParse(ctxt context.Context) (string, error)
 A helpful utility function that runs \`git rev\-parse \-\-show\-toplevel\` and returns the stdout. This is often useful when attempting to change the current working directory to a repositories root directory.
 
 <a name="LogErr"></a>
-## func [LogErr](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Logs.go#L65>)
+## func [LogErr](<https://github.com/barbell-math/smoothbrain-bs/blob/main/logs.go#L65>)
 
 ```go
 func LogErr(fmt string, args ...any)
@@ -98,7 +99,7 @@ func LogErr(fmt string, args ...any)
 Logs errors in red.
 
 <a name="LogInfo"></a>
-## func [LogInfo](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Logs.go#L45>)
+## func [LogInfo](<https://github.com/barbell-math/smoothbrain-bs/blob/main/logs.go#L45>)
 
 ```go
 func LogInfo(fmt string, args ...any)
@@ -107,7 +108,7 @@ func LogInfo(fmt string, args ...any)
 Logs info in cyan.
 
 <a name="LogPanic"></a>
-## func [LogPanic](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Logs.go#L70>)
+## func [LogPanic](<https://github.com/barbell-math/smoothbrain-bs/blob/main/logs.go#L70>)
 
 ```go
 func LogPanic(fmt string, args ...any)
@@ -116,7 +117,7 @@ func LogPanic(fmt string, args ...any)
 Logs errors in bold red and exits.
 
 <a name="LogQuietInfo"></a>
-## func [LogQuietInfo](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Logs.go#L50>)
+## func [LogQuietInfo](<https://github.com/barbell-math/smoothbrain-bs/blob/main/logs.go#L50>)
 
 ```go
 func LogQuietInfo(fmt string, args ...any)
@@ -125,7 +126,7 @@ func LogQuietInfo(fmt string, args ...any)
 Logs quiet info in gray.
 
 <a name="LogSuccess"></a>
-## func [LogSuccess](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Logs.go#L55>)
+## func [LogSuccess](<https://github.com/barbell-math/smoothbrain-bs/blob/main/logs.go#L55>)
 
 ```go
 func LogSuccess(fmt string, args ...any)
@@ -134,7 +135,7 @@ func LogSuccess(fmt string, args ...any)
 Logs successes in green.
 
 <a name="LogWarn"></a>
-## func [LogWarn](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Logs.go#L60>)
+## func [LogWarn](<https://github.com/barbell-math/smoothbrain-bs/blob/main/logs.go#L60>)
 
 ```go
 func LogWarn(fmt string, args ...any)
@@ -152,7 +153,7 @@ func Main(progName string)
 The main function that runs the build system. This is intended to be called by the \`main\` function of any code that uses this library.
 
 <a name="Mkdir"></a>
-## func [Mkdir](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L30>)
+## func [Mkdir](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L30>)
 
 ```go
 func Mkdir(path string) error
@@ -161,7 +162,7 @@ func Mkdir(path string) error
 A utility function that creates the supplied directory as well as all necessary parent directories.
 
 <a name="Open"></a>
-## func [Open](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L14>)
+## func [Open](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L14>)
 
 ```go
 func Open(name string) (*os.File, error)
@@ -170,7 +171,7 @@ func Open(name string) (*os.File, error)
 A utility function that opens a file and logs the file's path.
 
 <a name="RegisterBsBuildTarget"></a>
-## func [RegisterBsBuildTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L11>)
+## func [RegisterBsBuildTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L11>)
 
 ```go
 func RegisterBsBuildTarget()
@@ -179,7 +180,7 @@ func RegisterBsBuildTarget()
 Registers a target that rebuilds the build system. This is often useful when changes are made to the build system of a project.
 
 <a name="RegisterCommonGoCmdTargets"></a>
-## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L151>)
+## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L182>)
 
 ```go
 func RegisterCommonGoCmdTargets(g GoTargets)
@@ -188,7 +189,7 @@ func RegisterCommonGoCmdTargets(g GoTargets)
 Registers some common go cmds as targets. See the [MergegateTargets](<#MergegateTargets>) struct for details about the available targets that can be added.
 
 <a name="RegisterGoMarkDocTargets"></a>
-## func [RegisterGoMarkDocTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L103>)
+## func [RegisterGoMarkDocTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L103>)
 
 ```go
 func RegisterGoMarkDocTargets()
@@ -200,13 +201,22 @@ Registers two targets:
 2. The second target will install gomarkdoc using go intstall
 
 <a name="RegisterMergegateTarget"></a>
-## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L215>)
+## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L246>)
 
 ```go
 func RegisterMergegateTarget(a MergegateTargets)
 ```
 
 Registers a mergegate target that will perform the actions that are defined by the [MergegateTargets](<#MergegateTargets>) struct. See the [MergegateTargets](<#MergegateTargets>) struct for details about the available stages the mergegate target can run.
+
+<a name="RegisterSqlcTargets"></a>
+## func [RegisterSqlcTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L138>)
+
+```go
+func RegisterSqlcTargets()
+```
+
+
 
 <a name="RegisterTarget"></a>
 ## func [RegisterTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/bs.go#L43>)
@@ -218,7 +228,7 @@ func RegisterTarget(ctxt context.Context, name string, stages ...StageFunc)
 Registers a new build target to the build system. When run, the new target will sequentially run all provided stages, stopping if an error is encountered.
 
 <a name="RegisterUpdateDepsTarget"></a>
-## func [RegisterUpdateDepsTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L27>)
+## func [RegisterUpdateDepsTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L27>)
 
 ```go
 func RegisterUpdateDepsTarget()
@@ -227,7 +237,7 @@ func RegisterUpdateDepsTarget()
 Registers a target that updates all dependences. Dependencies that are in the \`barbell\-math\` repo will always be pinned at latest and all other dependencies will be updated to the latest version.
 
 <a name="Run"></a>
-## func [Run](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Run.go#L48-L53>)
+## func [Run](<https://github.com/barbell-math/smoothbrain-bs/blob/main/run.go#L48-L53>)
 
 ```go
 func Run(ctxt context.Context, pipe io.Writer, prog string, args ...string) error
@@ -236,7 +246,7 @@ func Run(ctxt context.Context, pipe io.Writer, prog string, args ...string) erro
 Runs the program with the specified \`args\` using the supplied context in the current working directory. The supplied pipe will be used to capture Stdout. Stderr will always be printed to the console.
 
 <a name="RunCwd"></a>
-## func [RunCwd](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Run.go#L15-L21>)
+## func [RunCwd](<https://github.com/barbell-math/smoothbrain-bs/blob/main/run.go#L15-L21>)
 
 ```go
 func RunCwd(ctxt context.Context, pipe io.Writer, cwd string, prog string, args ...string) error
@@ -245,7 +255,7 @@ func RunCwd(ctxt context.Context, pipe io.Writer, cwd string, prog string, args 
 Runs the program with the specified \`args\` using the supplied context. The supplied pipe will be used to capture Stdout. Stderr will always be printed to the console.
 
 <a name="RunCwdStdout"></a>
-## func [RunCwdStdout](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Run.go#L60-L65>)
+## func [RunCwdStdout](<https://github.com/barbell-math/smoothbrain-bs/blob/main/run.go#L60-L65>)
 
 ```go
 func RunCwdStdout(ctxt context.Context, cwd string, prog string, args ...string) error
@@ -254,7 +264,7 @@ func RunCwdStdout(ctxt context.Context, cwd string, prog string, args ...string)
 Runs the program with the specified \`args\` using the supplied context. All output of the program will be printed to stdout. Equivalent to calling [Run](<#Run>) and providing [os.Stdout](<https://pkg.go.dev/os/#Stdout>) for the \`pipe\` argument.
 
 <a name="RunStdout"></a>
-## func [RunStdout](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Run.go#L73>)
+## func [RunStdout](<https://github.com/barbell-math/smoothbrain-bs/blob/main/run.go#L73>)
 
 ```go
 func RunStdout(ctxt context.Context, prog string, args ...string) error
@@ -263,7 +273,7 @@ func RunStdout(ctxt context.Context, prog string, args ...string) error
 Runs the program with the specified \`args\` using the supplied context in the current working directory. All output of the program will be printed to stdout. Equivalent to calling [Run](<#Run>) and providing [os.Stdout](<https://pkg.go.dev/os/#Stdout>) for the \`pipe\` argument.
 
 <a name="RunTarget"></a>
-## func [RunTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Run.go#L80>)
+## func [RunTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/run.go#L80>)
 
 ```go
 func RunTarget(ctxt context.Context, target string, cmdLineArgs ...string)
@@ -272,7 +282,7 @@ func RunTarget(ctxt context.Context, target string, cmdLineArgs ...string)
 Runs the supplied target, given that the supplied target is present in the build systems target list. Execution of all further targets/stages will stop if running the supplied target fails.
 
 <a name="TmpEnvVarSet"></a>
-## func [TmpEnvVarSet](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L57>)
+## func [TmpEnvVarSet](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L57>)
 
 ```go
 func TmpEnvVarSet(name string, val string) (reset func() error, err error)
@@ -281,7 +291,7 @@ func TmpEnvVarSet(name string, val string) (reset func() error, err error)
 A utility function that changes the supplied env variable to the supplied value, returning a closure that can be used to set the env variable back to it's original value. If the supplied env variable did not exist before calling this function then the returned closure will remove the env variable instead of reseting it to it's original value.
 
 <a name="Touch"></a>
-## func [Touch](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Utility.go#L21>)
+## func [Touch](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L21>)
 
 ```go
 func Touch(name string) error
@@ -290,7 +300,7 @@ func Touch(name string) error
 A utility function that creates but does not open a file and logs the file's path.
 
 <a name="GoTargets"></a>
-## type [GoTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L140-L147>)
+## type [GoTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L171-L178>)
 
 Defines the available targets that can be added by [RegisterCommonGoCmdTargets](<#RegisterCommonGoCmdTargets>).
 
@@ -306,7 +316,7 @@ type GoTargets struct {
 ```
 
 <a name="MergegateTargets"></a>
-## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Targets.go#L196-L210>)
+## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L227-L241>)
 
 Defines all possible stages that can run in a mergegate target.
 
@@ -338,7 +348,7 @@ type StageFunc func(ctxt context.Context, cmdLineArgs ...string) error
 ```
 
 <a name="CdToRepoRoot"></a>
-### func [CdToRepoRoot](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Stages.go#L46>)
+### func [CdToRepoRoot](<https://github.com/barbell-math/smoothbrain-bs/blob/main/stages.go#L46>)
 
 ```go
 func CdToRepoRoot() StageFunc
@@ -347,7 +357,7 @@ func CdToRepoRoot() StageFunc
 Changes the current working directory to the repositories root directory if the current working directory is inside a repo. Results in an error if the current working directory is not inside a repo.
 
 <a name="Stage"></a>
-### func [Stage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Stages.go#L14-L17>)
+### func [Stage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/stages.go#L14-L17>)
 
 ```go
 func Stage(name string, op func(ctxt context.Context, cmdLineArgs ...string) error) StageFunc
@@ -356,7 +366,7 @@ func Stage(name string, op func(ctxt context.Context, cmdLineArgs ...string) err
 Creates a stage that can be added to a build target. Stages define the operations that will take place when a build target is executing. The supplied context can be modified and passed to [Run](<#Run>) functions to deterministically control how long various operations take. This prevents builds from hanging forever.
 
 <a name="TargetAsStage"></a>
-### func [TargetAsStage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/Stages.go#L63>)
+### func [TargetAsStage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/stages.go#L63>)
 
 ```go
 func TargetAsStage(target string) StageFunc

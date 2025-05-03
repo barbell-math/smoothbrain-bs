@@ -135,6 +135,37 @@ func RegisterGoMarkDocTargets() {
 	)
 }
 
+func RegisterSqlcTargets() {
+	RegisterTarget(
+		context.Background(),
+		"sqlc",
+		CdToRepoRoot(),
+		Stage(
+			"Run sqlc generate",
+			func(ctxt context.Context, cmdLineArgs ...string) error {
+				err := RunStdout(ctxt, "sqlc", "generate")
+				if err != nil {
+					LogQuietInfo("Consider running build system with sqlcInstall target if sqlc is not installed")
+				}
+				return err
+			},
+		),
+	)
+	RegisterTarget(
+		context.Background(),
+		"sqlcInstall",
+		Stage(
+			"Run sqlc generate",
+			func(ctxt context.Context, cmdLineArgs ...string) error {
+				return RunStdout(
+					ctxt, "go", "install",
+					"github.com/sqlc-dev/sqlc/cmd/sqlc@latest",
+				)
+			},
+		),
+	)
+}
+
 // Defines the available targets that can be added by
 // [RegisterCommonGoCmdTargets].
 type GoTargets struct {
