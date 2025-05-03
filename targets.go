@@ -3,6 +3,8 @@ package sbbs
 import (
 	"bytes"
 	"context"
+	"fmt"
+	"path"
 	"strings"
 )
 
@@ -135,11 +137,25 @@ func RegisterGoMarkDocTargets() {
 	)
 }
 
-func RegisterSqlcTargets() {
+// Registers two targets:
+//  1. The first target will run sqlc generate in the provided path, relative to
+//     the repo root dir.
+//  2. The second target will install sqlc using go intstall
+func RegisterSqlcTargets(pathInRepo string) {
 	RegisterTarget(
 		context.Background(),
 		"sqlc",
-		CdToRepoRoot(),
+		Stage(
+			fmt.Sprintf("Cd to %s", pathInRepo),
+			func(ctxt context.Context, cmdLineArgs ...string) error {
+				root, err := GitRevParse(ctxt)
+				if err != nil {
+					return err
+				}
+				finalPath := path.Join(root, pathInRepo)
+				return Cd(finalPath)
+			},
+		),
 		Stage(
 			"Run sqlc generate",
 			func(ctxt context.Context, cmdLineArgs ...string) error {
