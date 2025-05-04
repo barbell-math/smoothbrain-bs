@@ -202,7 +202,7 @@ Registers two targets:
 2. The second target will install gomarkdoc using go intstall
 
 <a name="RegisterMergegateTarget"></a>
-## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L284>)
+## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L292>)
 
 ```go
 func RegisterMergegateTarget(a MergegateTargets)
@@ -322,7 +322,7 @@ type GoTargets struct {
 ```
 
 <a name="MergegateTargets"></a>
-## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L262-L279>)
+## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L262-L287>)
 
 Defines all possible stages that can run in a mergegate target.
 
@@ -332,7 +332,7 @@ type MergegateTargets struct {
     // the commited code is using all of the up to date dependencies.
     CheckDepsUpdated bool
     // When true a stage will install gomarkdoc, update the readme using the
-    // `gomarkdocReadme` targer, and run a diff to make sure that the commited
+    // `gomarkdocReadme` target, and run a diff to make sure that the committed
     // readme is up to date.
     CheckReadmeGomarkdoc bool
     // When true a stage will run go fmt and then run a diff to make sure that
@@ -344,6 +344,14 @@ type MergegateTargets struct {
     // When true a stage will run go generate and make sure that the generated
     // code matches what is commited to the repo.
     CheckGeneratedCode bool
+    // Any stages that should be run prior to all other mergegate stages as
+    // defined by the other flags in this struct. Useful for installing
+    // dependencies that the other stages might rely upon.
+    PreStages []StageFunc
+    // Any stages that should be run after all other mergegate stages as defined
+    // by the other flags in this struct. Useful for adding additional mergegate
+    // checks.
+    PostStages []StageFunc
 }
 ```
 
