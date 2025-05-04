@@ -1,6 +1,7 @@
 package sbbs
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"time"
@@ -65,6 +66,34 @@ func TargetAsStage(target string) StageFunc {
 		fmt.Sprintf("target:%s", target),
 		func(ctxt context.Context, cmdLineArgs ...string) error {
 			RunTarget(ctxt, target, cmdLineArgs...)
+			return nil
+		},
+	)
+}
+
+// Runs git diff on the current directory and if any output is returned prints
+// the given error message, the diff result, and suggests a target to run to fix
+// the issue if `targetToRun` is not an empty string. An error will be returned
+// if the diff returns any a non-empty result.
+func GitDiffStage(errMessage string, targetToRun string) StageFunc {
+	return Stage(
+		"Run Diff",
+		func(ctxt context.Context, cmdLineArgs ...string) error {
+			var buf bytes.Buffer
+			if err := Run(ctxt, &buf, "git", "diff"); err != nil {
+				return err
+			}
+			if buf.Len() > 0 {
+				LogErr(errMessage)
+				LogQuietInfo(buf.String())
+				if targetToRun != "" {
+					LogErr(
+						"Run build system with %s and push any changes",
+						targetToRun,
+					)
+				}
+				return StopErr
+			}
 			return nil
 		},
 	)

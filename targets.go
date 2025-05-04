@@ -281,34 +281,12 @@ type MergegateTargets struct {
 func RegisterMergegateTarget(a MergegateTargets) {
 	// Generate a stage that runs `git diff` and returns an error if there are any
 	// differences.
-	gitDiffStage := func(errMessage string, targetToRun string) StageFunc {
-		return Stage(
-			"Run Diff",
-			func(ctxt context.Context, cmdLineArgs ...string) error {
-				var buf bytes.Buffer
-				if err := Run(ctxt, &buf, "git", "diff"); err != nil {
-					return err
-				}
-				if buf.Len() > 0 {
-					LogErr(errMessage)
-					LogQuietInfo(buf.String())
-					LogErr(
-						"Run build system with %s and push any changes",
-						targetToRun,
-					)
-					return StopErr
-				}
-				return nil
-			},
-		)
-	}
-
 	stages := []StageFunc{}
 	if a.CheckFmt {
 		stages = append(
 			stages,
 			TargetAsStage("fmt"),
-			gitDiffStage("Fix formatting to get a passing run!", "fmt"),
+			GitDiffStage("Fix formatting to get a passing run!", "fmt"),
 		)
 	}
 	if a.CheckReadmeGomarkdoc {
@@ -316,14 +294,14 @@ func RegisterMergegateTarget(a MergegateTargets) {
 			stages,
 			TargetAsStage("gomarkdocInstall"),
 			TargetAsStage("gomarkdocReadme"),
-			gitDiffStage("Readme is out of date", "gomarkdocReadme"),
+			GitDiffStage("Readme is out of date", "gomarkdocReadme"),
 		)
 	}
 	if a.CheckDepsUpdated {
 		stages = append(
 			stages,
 			TargetAsStage("updateDeps"),
-			gitDiffStage("Out of date packages were detected", "updateDeps"),
+			GitDiffStage("Out of date packages were detected", "updateDeps"),
 		)
 	}
 	if a.CheckUnitTests {

@@ -43,6 +43,7 @@ A very simple build system written in 100% golang to avoid the need to have cmak
 - [type MergegateTargets](<#MergegateTargets>)
 - [type StageFunc](<#StageFunc>)
   - [func CdToRepoRoot\(\) StageFunc](<#CdToRepoRoot>)
+  - [func GitDiffStage\(errMessage string, targetToRun string\) StageFunc](<#GitDiffStage>)
   - [func Stage\(name string, op func\(ctxt context.Context, cmdLineArgs ...string\) error\) StageFunc](<#Stage>)
   - [func TargetAsStage\(target string\) StageFunc](<#TargetAsStage>)
 - [type TargetFunc](<#TargetFunc>)
@@ -180,7 +181,7 @@ func RegisterBsBuildTarget()
 Registers a target that rebuilds the build system. This is often useful when changes are made to the build system of a project.
 
 <a name="RegisterCommonGoCmdTargets"></a>
-## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L200>)
+## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L203>)
 
 ```go
 func RegisterCommonGoCmdTargets(g GoTargets)
@@ -189,7 +190,7 @@ func RegisterCommonGoCmdTargets(g GoTargets)
 Registers some common go cmds as targets. See the [MergegateTargets](<#MergegateTargets>) struct for details about the available targets that can be added.
 
 <a name="RegisterGoMarkDocTargets"></a>
-## func [RegisterGoMarkDocTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L105>)
+## func [RegisterGoMarkDocTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L108>)
 
 ```go
 func RegisterGoMarkDocTargets()
@@ -201,7 +202,7 @@ Registers two targets:
 2. The second target will install gomarkdoc using go intstall
 
 <a name="RegisterMergegateTarget"></a>
-## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L278>)
+## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L281>)
 
 ```go
 func RegisterMergegateTarget(a MergegateTargets)
@@ -210,7 +211,7 @@ func RegisterMergegateTarget(a MergegateTargets)
 Registers a mergegate target that will perform the actions that are defined by the [MergegateTargets](<#MergegateTargets>) struct. See the [MergegateTargets](<#MergegateTargets>) struct for details about the available stages the mergegate target can run.
 
 <a name="RegisterSqlcTargets"></a>
-## func [RegisterSqlcTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L144>)
+## func [RegisterSqlcTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L147>)
 
 ```go
 func RegisterSqlcTargets(pathInRepo string)
@@ -303,7 +304,7 @@ func Touch(name string) error
 A utility function that creates but does not open a file and logs the file's path.
 
 <a name="GoTargets"></a>
-## type [GoTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L187-L196>)
+## type [GoTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L190-L199>)
 
 Defines the available targets that can be added by [RegisterCommonGoCmdTargets](<#RegisterCommonGoCmdTargets>).
 
@@ -321,7 +322,7 @@ type GoTargets struct {
 ```
 
 <a name="MergegateTargets"></a>
-## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L259-L273>)
+## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L262-L276>)
 
 Defines all possible stages that can run in a mergegate target.
 
@@ -353,7 +354,7 @@ type StageFunc func(ctxt context.Context, cmdLineArgs ...string) error
 ```
 
 <a name="CdToRepoRoot"></a>
-### func [CdToRepoRoot](<https://github.com/barbell-math/smoothbrain-bs/blob/main/stages.go#L46>)
+### func [CdToRepoRoot](<https://github.com/barbell-math/smoothbrain-bs/blob/main/stages.go#L47>)
 
 ```go
 func CdToRepoRoot() StageFunc
@@ -361,8 +362,17 @@ func CdToRepoRoot() StageFunc
 
 Changes the current working directory to the repositories root directory if the current working directory is inside a repo. Results in an error if the current working directory is not inside a repo.
 
+<a name="GitDiffStage"></a>
+### func [GitDiffStage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/stages.go#L78>)
+
+```go
+func GitDiffStage(errMessage string, targetToRun string) StageFunc
+```
+
+Runs git diff on the current directory and if any output is returned prints the given error message, the diff result, and suggests a target to run to fix the issue if \`targetToRun\` is not an empty string. An error will be returned if the diff returns any a non\-empty result.
+
 <a name="Stage"></a>
-### func [Stage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/stages.go#L14-L17>)
+### func [Stage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/stages.go#L15-L18>)
 
 ```go
 func Stage(name string, op func(ctxt context.Context, cmdLineArgs ...string) error) StageFunc
@@ -371,7 +381,7 @@ func Stage(name string, op func(ctxt context.Context, cmdLineArgs ...string) err
 Creates a stage that can be added to a build target. Stages define the operations that will take place when a build target is executing. The supplied context can be modified and passed to [Run](<#Run>) functions to deterministically control how long various operations take. This prevents builds from hanging forever.
 
 <a name="TargetAsStage"></a>
-### func [TargetAsStage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/stages.go#L63>)
+### func [TargetAsStage](<https://github.com/barbell-math/smoothbrain-bs/blob/main/stages.go#L64>)
 
 ```go
 func TargetAsStage(target string) StageFunc
