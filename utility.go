@@ -61,7 +61,10 @@ func TmpEnvVarSet(name string, val string) (reset func() error, err error) {
 			LogQuietInfo("Restoring '%s' env var to '%s'", name, oldVal)
 			return os.Setenv(name, oldVal)
 		} else {
-			LogQuietInfo("Deleting '%s' env var sice it did not exist before", name)
+			LogQuietInfo(
+				"Deleting '%s' env var since it did not exist before",
+				name,
+			)
 			return os.Unsetenv(name)
 		}
 	}

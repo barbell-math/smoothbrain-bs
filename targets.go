@@ -174,7 +174,7 @@ func RegisterSqlcTargets(pathInRepo string) {
 		context.Background(),
 		"sqlcInstall",
 		Stage(
-			"Run sqlc generate",
+			"Run sqlc install",
 			func(ctxt context.Context, cmdLineArgs ...string) error {
 				return RunStdout(
 					ctxt, "go", "install",
