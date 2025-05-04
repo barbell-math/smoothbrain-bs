@@ -191,6 +191,8 @@ type GoTargets struct {
 	GenericBenchTarget bool
 	// When true a target will be added that runs `go fmt ./...`
 	GenericFmtTarget bool
+	// When true a target will be added that runs `go generate ./...`
+	GenericGenerateTarget bool
 }
 
 // Registers some common go cmds as targets. See the [MergegateTargets] struct
@@ -205,6 +207,20 @@ func RegisterCommonGoCmdTargets(g GoTargets) {
 				"Run go fmt",
 				func(ctxt context.Context, cmdLineArgs ...string) error {
 					return RunStdout(ctxt, "go", "fmt", "./...")
+				},
+			),
+		)
+	}
+
+	if g.GenericGenerateTarget {
+		RegisterTarget(
+			context.Background(),
+			"generate",
+			CdToRepoRoot(),
+			Stage(
+				"Run go generate",
+				func(ctxt context.Context, cmdLineArgs ...string) error {
+					return RunStdout(ctxt, "go", "generate", "./...")
 				},
 			),
 		)
@@ -251,8 +267,8 @@ type MergegateTargets struct {
 	// When true a stage will run go fmt and then run a diff to make sure that
 	// the commited code is properly formated.
 	CheckFmt bool
-	// When true a stage will run all unit tests in the repo to make sure that
-	// the commited code passes all unit tests.
+	// When true a stage will run go generate and then will run all unit tests
+	// in the repo to make sure that the commited code passes all unit tests.
 	CheckUnitTests bool
 }
 
@@ -308,7 +324,11 @@ func RegisterMergegateTarget(a MergegateTargets) {
 		)
 	}
 	if a.CheckUnitTests {
-		stages = append(stages, TargetAsStage("test"))
+		stages = append(
+			stages,
+			TargetAsStage("generate"),
+			TargetAsStage("test"),
+		)
 	}
 
 	RegisterTarget(context.Background(), "mergegate", stages...)
