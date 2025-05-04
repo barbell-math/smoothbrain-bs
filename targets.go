@@ -53,6 +53,9 @@ func RegisterUpdateDepsTarget() {
 					if !strings.Contains(iterPackage[0], "barbell-math") {
 						continue
 					}
+					if strings.Count(iterPackage[0], "/") != 2 {
+						continue
+					}
 
 					if err := RunStdout(
 						ctxt, "go", "get", iterPackage[0]+"@latest",
