@@ -180,7 +180,7 @@ func RegisterBsBuildTarget()
 Registers a target that rebuilds the build system. This is often useful when changes are made to the build system of a project.
 
 <a name="RegisterCommonGoCmdTargets"></a>
-## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L198>)
+## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L200>)
 
 ```go
 func RegisterCommonGoCmdTargets(g GoTargets)
@@ -201,7 +201,7 @@ Registers two targets:
 2. The second target will install gomarkdoc using go intstall
 
 <a name="RegisterMergegateTarget"></a>
-## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L262>)
+## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L278>)
 
 ```go
 func RegisterMergegateTarget(a MergegateTargets)
@@ -303,7 +303,7 @@ func Touch(name string) error
 A utility function that creates but does not open a file and logs the file's path.
 
 <a name="GoTargets"></a>
-## type [GoTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L187-L194>)
+## type [GoTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L187-L196>)
 
 Defines the available targets that can be added by [RegisterCommonGoCmdTargets](<#RegisterCommonGoCmdTargets>).
 
@@ -315,11 +315,13 @@ type GoTargets struct {
     GenericBenchTarget bool
     // When true a target will be added that runs `go fmt ./...`
     GenericFmtTarget bool
+    // When true a target will be added that runs `go generate ./...`
+    GenericGenerateTarget bool
 }
 ```
 
 <a name="MergegateTargets"></a>
-## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L243-L257>)
+## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L259-L273>)
 
 Defines all possible stages that can run in a mergegate target.
 
@@ -335,8 +337,8 @@ type MergegateTargets struct {
     // When true a stage will run go fmt and then run a diff to make sure that
     // the commited code is properly formated.
     CheckFmt bool
-    // When true a stage will run all unit tests in the repo to make sure that
-    // the commited code passes all unit tests.
+    // When true a stage will run go generate and then will run all unit tests
+    // in the repo to make sure that the commited code passes all unit tests.
     CheckUnitTests bool
 }
 ```
