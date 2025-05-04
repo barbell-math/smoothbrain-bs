@@ -264,7 +264,7 @@ type MergegateTargets struct {
 	// the commited code is using all of the up to date dependencies.
 	CheckDepsUpdated bool
 	// When true a stage will install gomarkdoc, update the readme using the
-	// `gomarkdocReadme` targer, and run a diff to make sure that the commited
+	// `gomarkdocReadme` target, and run a diff to make sure that the committed
 	// readme is up to date.
 	CheckReadmeGomarkdoc bool
 	// When true a stage will run go fmt and then run a diff to make sure that
@@ -276,6 +276,14 @@ type MergegateTargets struct {
 	// When true a stage will run go generate and make sure that the generated
 	// code matches what is commited to the repo.
 	CheckGeneratedCode bool
+	// Any stages that should be run prior to all other mergegate stages as
+	// defined by the other flags in this struct. Useful for installing
+	// dependencies that the other stages might rely upon.
+	PreStages []StageFunc
+	// Any stages that should be run after all other mergegate stages as defined
+	// by the other flags in this struct. Useful for adding additional mergegate
+	// checks.
+	PostStages []StageFunc
 }
 
 // Registers a mergegate target that will perform the actions that are defined
@@ -285,6 +293,7 @@ func RegisterMergegateTarget(a MergegateTargets) {
 	// Generate a stage that runs `git diff` and returns an error if there are any
 	// differences.
 	stages := []StageFunc{}
+	stages = append(stages, a.PreStages...)
 	if a.CheckFmt {
 		stages = append(
 			stages,
@@ -320,6 +329,7 @@ func RegisterMergegateTarget(a MergegateTargets) {
 			TargetAsStage("test"),
 		)
 	}
+	stages = append(stages, a.PostStages...)
 
 	RegisterTarget(context.Background(), "mergegate", stages...)
 }
