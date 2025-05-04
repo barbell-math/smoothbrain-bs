@@ -202,7 +202,7 @@ Registers two targets:
 2. The second target will install gomarkdoc using go intstall
 
 <a name="RegisterMergegateTarget"></a>
-## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L281>)
+## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L284>)
 
 ```go
 func RegisterMergegateTarget(a MergegateTargets)
@@ -322,7 +322,7 @@ type GoTargets struct {
 ```
 
 <a name="MergegateTargets"></a>
-## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L262-L276>)
+## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L262-L279>)
 
 Defines all possible stages that can run in a mergegate target.
 
@@ -338,9 +338,12 @@ type MergegateTargets struct {
     // When true a stage will run go fmt and then run a diff to make sure that
     // the commited code is properly formated.
     CheckFmt bool
-    // When true a stage will run go generate and then will run all unit tests
-    // in the repo to make sure that the commited code passes all unit tests.
+    // When true a stage will run all unit tests in the repo to make sure that
+    // the commited code passes all unit tests.
     CheckUnitTests bool
+    // When true a stage will run go generate and make sure that the generated
+    // code matches what is commited to the repo.
+    CheckGeneratedCode bool
 }
 ```
 

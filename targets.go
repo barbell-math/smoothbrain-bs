@@ -270,9 +270,12 @@ type MergegateTargets struct {
 	// When true a stage will run go fmt and then run a diff to make sure that
 	// the commited code is properly formated.
 	CheckFmt bool
-	// When true a stage will run go generate and then will run all unit tests
-	// in the repo to make sure that the commited code passes all unit tests.
+	// When true a stage will run all unit tests in the repo to make sure that
+	// the commited code passes all unit tests.
 	CheckUnitTests bool
+	// When true a stage will run go generate and make sure that the generated
+	// code matches what is commited to the repo.
+	CheckGeneratedCode bool
 }
 
 // Registers a mergegate target that will perform the actions that are defined
@@ -304,10 +307,16 @@ func RegisterMergegateTarget(a MergegateTargets) {
 			GitDiffStage("Out of date packages were detected", "updateDeps"),
 		)
 	}
-	if a.CheckUnitTests {
+	if a.CheckGeneratedCode {
 		stages = append(
 			stages,
 			TargetAsStage("generate"),
+			GitDiffStage("Out of sync generated code was detected", "generate"),
+		)
+	}
+	if a.CheckUnitTests {
+		stages = append(
+			stages,
 			TargetAsStage("test"),
 		)
 	}
