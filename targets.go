@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"os/user"
 	"path"
 	"strings"
 )
@@ -179,6 +180,45 @@ func RegisterSqlcTargets(pathInRepo string) {
 				return RunStdout(
 					ctxt, "go", "install",
 					"github.com/sqlc-dev/sqlc/cmd/sqlc@latest",
+				)
+			},
+		),
+	)
+}
+
+// Registers one target:
+//  1. The first target will run install go-enum in ~/go/bin
+func RegisterGoEnumTargets() {
+	RegisterTarget(
+		context.Background(),
+		"goenumInstall",
+		Stage(
+			"Install go-enum",
+			func(ctxt context.Context, cmdLineArgs ...string) error {
+				var unameS bytes.Buffer
+				var unameM bytes.Buffer
+
+				if err := Run(ctxt, &unameS, "uname", "-s"); err != nil {
+					return err
+				}
+				if err := Run(ctxt, &unameM, "uname", "-m"); err != nil {
+					return err
+				}
+
+				usr, err := user.Current()
+				if err != nil {
+					return err
+				}
+
+				return RunStdout(
+					ctxt,
+					"curl", "-fsSL",
+					fmt.Sprintf(
+						"https://github.com/abice/go-enum/releases/download/v0.6.1/go-enum_%s_%s",
+						strings.TrimSpace(unameS.String()),
+						strings.TrimSpace(unameM.String()),
+					),
+					"-o", path.Join(usr.HomeDir, "go", "bin", "go-enum"),
 				)
 			},
 		),
