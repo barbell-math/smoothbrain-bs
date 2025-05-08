@@ -27,6 +27,7 @@ A very simple build system written in 100% golang to avoid the need to have cmak
 - [func Open\(name string\) \(\*os.File, error\)](<#Open>)
 - [func RegisterBsBuildTarget\(\)](<#RegisterBsBuildTarget>)
 - [func RegisterCommonGoCmdTargets\(g GoTargets\)](<#RegisterCommonGoCmdTargets>)
+- [func RegisterGoEnumTargets\(\)](<#RegisterGoEnumTargets>)
 - [func RegisterGoMarkDocTargets\(\)](<#RegisterGoMarkDocTargets>)
 - [func RegisterMergegateTarget\(a MergegateTargets\)](<#RegisterMergegateTarget>)
 - [func RegisterSqlcTargets\(pathInRepo string\)](<#RegisterSqlcTargets>)
@@ -172,7 +173,7 @@ func Open(name string) (*os.File, error)
 A utility function that opens a file and logs the file's path.
 
 <a name="RegisterBsBuildTarget"></a>
-## func [RegisterBsBuildTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L13>)
+## func [RegisterBsBuildTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L14>)
 
 ```go
 func RegisterBsBuildTarget()
@@ -181,7 +182,7 @@ func RegisterBsBuildTarget()
 Registers a target that rebuilds the build system. This is often useful when changes are made to the build system of a project.
 
 <a name="RegisterCommonGoCmdTargets"></a>
-## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L203>)
+## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L243>)
 
 ```go
 func RegisterCommonGoCmdTargets(g GoTargets)
@@ -189,8 +190,19 @@ func RegisterCommonGoCmdTargets(g GoTargets)
 
 Registers some common go cmds as targets. See the [MergegateTargets](<#MergegateTargets>) struct for details about the available targets that can be added.
 
+<a name="RegisterGoEnumTargets"></a>
+## func [RegisterGoEnumTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L191>)
+
+```go
+func RegisterGoEnumTargets()
+```
+
+Registers one target:
+
+1. The first target will run install go\-enum in \~/go/bin
+
 <a name="RegisterGoMarkDocTargets"></a>
-## func [RegisterGoMarkDocTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L108>)
+## func [RegisterGoMarkDocTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L109>)
 
 ```go
 func RegisterGoMarkDocTargets()
@@ -202,7 +214,7 @@ Registers two targets:
 2. The second target will install gomarkdoc using go intstall
 
 <a name="RegisterMergegateTarget"></a>
-## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L292>)
+## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L332>)
 
 ```go
 func RegisterMergegateTarget(a MergegateTargets)
@@ -211,7 +223,7 @@ func RegisterMergegateTarget(a MergegateTargets)
 Registers a mergegate target that will perform the actions that are defined by the [MergegateTargets](<#MergegateTargets>) struct. See the [MergegateTargets](<#MergegateTargets>) struct for details about the available stages the mergegate target can run.
 
 <a name="RegisterSqlcTargets"></a>
-## func [RegisterSqlcTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L147>)
+## func [RegisterSqlcTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L148>)
 
 ```go
 func RegisterSqlcTargets(pathInRepo string)
@@ -232,7 +244,7 @@ func RegisterTarget(ctxt context.Context, name string, stages ...StageFunc)
 Registers a new build target to the build system. When run, the new target will sequentially run all provided stages, stopping if an error is encountered.
 
 <a name="RegisterUpdateDepsTarget"></a>
-## func [RegisterUpdateDepsTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L29>)
+## func [RegisterUpdateDepsTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L30>)
 
 ```go
 func RegisterUpdateDepsTarget()
@@ -304,7 +316,7 @@ func Touch(name string) error
 A utility function that creates but does not open a file and logs the file's path.
 
 <a name="GoTargets"></a>
-## type [GoTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L190-L199>)
+## type [GoTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L230-L239>)
 
 Defines the available targets that can be added by [RegisterCommonGoCmdTargets](<#RegisterCommonGoCmdTargets>).
 
@@ -322,7 +334,7 @@ type GoTargets struct {
 ```
 
 <a name="MergegateTargets"></a>
-## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L262-L287>)
+## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L302-L327>)
 
 Defines all possible stages that can run in a mergegate target.
 
