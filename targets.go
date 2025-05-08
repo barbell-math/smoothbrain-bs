@@ -209,8 +209,9 @@ func RegisterGoEnumTargets() {
 				if err != nil {
 					return err
 				}
+				finalPath := path.Join(usr.HomeDir, "go", "bin", "go-enum")
 
-				return RunStdout(
+				if err := RunStdout(
 					ctxt,
 					"curl", "-fsSL",
 					fmt.Sprintf(
@@ -218,8 +219,12 @@ func RegisterGoEnumTargets() {
 						strings.TrimSpace(unameS.String()),
 						strings.TrimSpace(unameM.String()),
 					),
-					"-o", path.Join(usr.HomeDir, "go", "bin", "go-enum"),
-				)
+					"-o", finalPath,
+				); err != nil {
+					return err
+				}
+
+				return RunStdout(ctxt, "chmod", "+x", finalPath)
 			},
 		),
 	)
