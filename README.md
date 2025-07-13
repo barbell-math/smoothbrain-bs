@@ -33,6 +33,8 @@ A very simple build system written in 100% golang to avoid the need to have cmak
 - [func RegisterSqlcTargets\(pathInRepo string\)](<#RegisterSqlcTargets>)
 - [func RegisterTarget\(ctxt context.Context, name string, stages ...StageFunc\)](<#RegisterTarget>)
 - [func RegisterUpdateDepsTarget\(\)](<#RegisterUpdateDepsTarget>)
+- [func RmDir\(path string\) error](<#RmDir>)
+- [func RmFile\(path string\) error](<#RmFile>)
 - [func Run\(ctxt context.Context, pipe io.Writer, prog string, args ...string\) error](<#Run>)
 - [func RunCwd\(ctxt context.Context, pipe io.Writer, cwd string, prog string, args ...string\) error](<#RunCwd>)
 - [func RunCwdStdout\(ctxt context.Context, cwd string, prog string, args ...string\) error](<#RunCwdStdout>)
@@ -65,7 +67,7 @@ var (
 ```
 
 <a name="Cd"></a>
-## func [Cd](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L37>)
+## func [Cd](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L49>)
 
 ```go
 func Cd(dir string) error
@@ -155,7 +157,7 @@ func Main(progName string)
 The main function that runs the build system. This is intended to be called by the \`main\` function of any code that uses this library.
 
 <a name="Mkdir"></a>
-## func [Mkdir](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L30>)
+## func [Mkdir](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L36>)
 
 ```go
 func Mkdir(path string) error
@@ -252,6 +254,24 @@ func RegisterUpdateDepsTarget()
 
 Registers a target that updates all dependences. Dependencies that are in the \`barbell\-math\` repo will always be pinned at latest and all other dependencies will be updated to the latest version.
 
+<a name="RmDir"></a>
+## func [RmDir](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L42>)
+
+```go
+func RmDir(path string) error
+```
+
+A utility function that removes the supplied directory.
+
+<a name="RmFile"></a>
+## func [RmFile](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L29>)
+
+```go
+func RmFile(path string) error
+```
+
+A utility function that removes the supplied file or empty directory.
+
 <a name="Run"></a>
 ## func [Run](<https://github.com/barbell-math/smoothbrain-bs/blob/main/run.go#L48-L53>)
 
@@ -298,7 +318,7 @@ func RunTarget(ctxt context.Context, target string, cmdLineArgs ...string)
 Runs the supplied target, given that the supplied target is present in the build systems target list. Execution of all further targets/stages will stop if running the supplied target fails.
 
 <a name="TmpEnvVarSet"></a>
-## func [TmpEnvVarSet](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L57>)
+## func [TmpEnvVarSet](<https://github.com/barbell-math/smoothbrain-bs/blob/main/utility.go#L69>)
 
 ```go
 func TmpEnvVarSet(name string, val string) (reset func() error, err error)

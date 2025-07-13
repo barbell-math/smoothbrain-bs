@@ -25,11 +25,23 @@ func Touch(name string) error {
 	return err
 }
 
+// A utility function that removes the supplied file or empty directory.
+func RmFile(path string) error {
+	LogQuietInfo("Removing File: '%s'", path)
+	return os.Remove(path)
+}
+
 // A utility function that creates the supplied directory as well as all
 // necessary parent directories.
 func Mkdir(path string) error {
 	LogQuietInfo("Creating Dir(s): '%s'", path)
 	return os.MkdirAll(path, 0755)
+}
+
+// A utility function that removes the supplied directory.
+func RmDir(path string) error {
+	LogQuietInfo("Removing Dir: '%s'", path)
+	return os.RemoveAll(path)
 }
 
 // A utility function that changes the programs current working directory and
