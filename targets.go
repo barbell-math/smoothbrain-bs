@@ -130,7 +130,10 @@ func RegisterGoMarkDocTargets() {
 			"Run gomarkdoc",
 			func(ctxt context.Context, cmdLineArgs ...string) error {
 				err := RunStdout(
-					ctxt, "gomarkdoc", "-vv", "--embed", "--output", "README.md", ".",
+					ctxt, "gomarkdoc",
+					"-vv", "--embed",
+					"--repository.default-branch", "main",
+					"--output", "README.md", ".",
 				)
 				if err != nil {
 					LogQuietInfo("Consider running build system with gomarkdocInstall target if gomarkdoc is not installed")
