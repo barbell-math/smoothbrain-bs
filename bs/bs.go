@@ -8,15 +8,13 @@ func main() {
 	sbbs.RegisterBsBuildTarget()
 	sbbs.RegisterUpdateDepsTarget()
 	sbbs.RegisterGoMarkDocTargets()
-	sbbs.RegisterCommonGoCmdTargets(sbbs.GoTargets{
-		GenericTestTarget:  true,
-		GenericBenchTarget: true,
-		GenericFmtTarget:   true,
-	})
+	sbbs.RegisterCommonGoCmdTargets(sbbs.NewGoTargets().
+		DefaultFmtTarget(),
+	)
 	sbbs.RegisterMergegateTarget(sbbs.MergegateTargets{
 		CheckDepsUpdated:     true,
 		CheckReadmeGomarkdoc: true,
-		CheckFmt:             true,
+		FmtTarget:            sbbs.DefaultFmtTargetName,
 	})
 	sbbs.Main("build")
 }

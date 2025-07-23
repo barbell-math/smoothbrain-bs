@@ -232,71 +232,139 @@ func RegisterGoEnumTargets() {
 
 // Defines the available targets that can be added by
 // [RegisterCommonGoCmdTargets].
-type GoTargets struct {
-	// When true a target will be added that runs `go test ./...`
-	GenericTestTarget bool
-	// When true a target will be added that runs `go test -bench=. ./...`
-	GenericBenchTarget bool
-	// When true a target will be added that runs `go fmt ./...`
-	GenericFmtTarget bool
-	// When true a target will be added that runs `go generate ./...`
-	GenericGenerateTarget bool
+type goTargets struct {
+	TestTargetName     string
+	TestArgs           []string
+	BenchTargetName    string
+	BenchArgs          []string
+	FmtTargetName      string
+	FmtArgs            []string
+	GenerateTargetName string
+	GenerateArgs       []string
+}
+
+func AllGoTargets() *goTargets {
+	return (&goTargets{}).
+		DefaultFmtTarget().
+		DefaultGenerateTarget().
+		DefaultTestTarget().
+		DefaultBenchTarget()
+}
+func NewGoTargets() *goTargets {
+	return &goTargets{}
+}
+
+const DefaultFmtTargetName = "fmt"
+const DefaultGenerateTargetName = "generate"
+const DefaultTestTargetName = "test"
+const DefaultBenchTargetName = "bench"
+
+func (g *goTargets) DefaultFmtTarget() *goTargets {
+	g.FmtTargetName = DefaultFmtTargetName
+	g.FmtArgs = []string{"./..."}
+	return g
+}
+func (g *goTargets) SetFmtTarget(name string, args ...string) *goTargets {
+	g.FmtTargetName = name
+	g.FmtArgs = args
+	return g
+}
+
+func (g *goTargets) DefaultGenerateTarget() *goTargets {
+	g.GenerateTargetName = DefaultGenerateTargetName
+	g.GenerateArgs = []string{"./..."}
+	return g
+}
+func (g *goTargets) SetGenerateTarget(name string, args ...string) *goTargets {
+	g.GenerateTargetName = name
+	g.GenerateArgs = args
+	return g
+}
+
+func (g *goTargets) DefaultTestTarget() *goTargets {
+	g.TestTargetName = DefaultTestTargetName
+	g.TestArgs = []string{"-v", "./..."}
+	return g
+}
+func (g *goTargets) SetTestTarget(name string, args ...string) *goTargets {
+	g.TestTargetName = name
+	g.TestArgs = args
+	return g
+}
+
+func (g *goTargets) DefaultBenchTarget() *goTargets {
+	g.BenchTargetName = DefaultBenchTargetName
+	g.BenchArgs = []string{"-bench=.", "-v", "./..."}
+	return g
+}
+func (g *goTargets) SetBenchTarget(name string, args ...string) *goTargets {
+	g.BenchTargetName = name
+	g.BenchArgs = args
+	return g
 }
 
 // Registers some common go cmds as targets. See the [MergegateTargets] struct
 // for details about the available targets that can be added.
-func RegisterCommonGoCmdTargets(g GoTargets) {
-	if g.GenericFmtTarget {
+func RegisterCommonGoCmdTargets(g *goTargets) {
+	if len(g.FmtArgs) > 0 && len(g.FmtTargetName) > 0 {
+		args := []string{"fmt"}
+		args = append(args, g.FmtArgs...)
 		RegisterTarget(
 			context.Background(),
-			"fmt",
+			g.FmtTargetName,
 			CdToRepoRoot(),
 			Stage(
 				"Run go fmt",
 				func(ctxt context.Context, cmdLineArgs ...string) error {
-					return RunStdout(ctxt, "go", "fmt", "./...")
+					return RunStdout(ctxt, "go", args...)
 				},
 			),
 		)
 	}
 
-	if g.GenericGenerateTarget {
+	if len(g.GenerateArgs) > 0 && len(g.GenerateTargetName) > 0 {
+		args := []string{"generate"}
+		args = append(args, g.GenerateArgs...)
 		RegisterTarget(
 			context.Background(),
-			"generate",
+			g.GenerateTargetName,
 			CdToRepoRoot(),
 			Stage(
 				"Run go generate",
 				func(ctxt context.Context, cmdLineArgs ...string) error {
-					return RunStdout(ctxt, "go", "generate", "./...")
+					return RunStdout(ctxt, "go", args...)
 				},
 			),
 		)
 	}
 
-	if g.GenericTestTarget {
+	if len(g.TestArgs) > 0 && len(g.TestTargetName) > 0 {
+		args := []string{"test"}
+		args = append(args, g.TestArgs...)
 		RegisterTarget(
 			context.Background(),
-			"test",
+			g.TestTargetName,
 			CdToRepoRoot(),
 			Stage(
 				"Run go test",
 				func(ctxt context.Context, cmdLineArgs ...string) error {
-					return RunStdout(ctxt, "go", "test", "-v", "./...")
+					return RunStdout(ctxt, "go", args...)
 				},
 			),
 		)
 	}
 
-	if g.GenericBenchTarget {
+	if len(g.BenchArgs) > 0 && len(g.BenchTargetName) > 0 {
+		args := []string{"test"}
+		args = append(args, g.BenchArgs...)
 		RegisterTarget(
 			context.Background(),
-			"bench",
+			g.BenchTargetName,
 			CdToRepoRoot(),
 			Stage(
 				"Run go test",
 				func(ctxt context.Context, cmdLineArgs ...string) error {
-					return RunStdout(ctxt, "go", "test", "-bench=.", "-v", "./...")
+					return RunStdout(ctxt, "go", args...)
 				},
 			),
 		)
@@ -312,15 +380,17 @@ type MergegateTargets struct {
 	// `gomarkdocReadme` target, and run a diff to make sure that the committed
 	// readme is up to date.
 	CheckReadmeGomarkdoc bool
-	// When true a stage will run go fmt and then run a diff to make sure that
-	// the commited code is properly formated.
-	CheckFmt bool
-	// When true a stage will run all unit tests in the repo to make sure that
-	// the commited code passes all unit tests.
-	CheckUnitTests bool
-	// When true a stage will run go generate and make sure that the generated
-	// code matches what is commited to the repo.
-	CheckGeneratedCode bool
+	// When supplied, the given target will be expected to format the code. A
+	// diff will then be run to make sure that the commited code is properly
+	// formated.
+	FmtTarget string
+	// When supplied, the given target will be expected to test the code to make
+	// sure the commited code passes all unit tests.
+	TestTarget string
+	// When supplied, the given target will be expected to generate the code
+	// required for the project. A diff will then be run to make sure that the
+	// commited code is properly formated.
+	GenerateTarget string
 	// Any stages that should be run prior to all other mergegate stages as
 	// defined by the other flags in this struct. Useful for installing
 	// dependencies that the other stages might rely upon.
@@ -339,10 +409,10 @@ func RegisterMergegateTarget(a MergegateTargets) {
 	// differences.
 	stages := []StageFunc{}
 	stages = append(stages, a.PreStages...)
-	if a.CheckFmt {
+	if len(a.FmtTarget) > 0 {
 		stages = append(
 			stages,
-			TargetAsStage("fmt"),
+			TargetAsStage(a.FmtTarget),
 			GitDiffStage("Fix formatting to get a passing run!", "fmt"),
 		)
 	}
@@ -361,17 +431,17 @@ func RegisterMergegateTarget(a MergegateTargets) {
 			GitDiffStage("Out of date packages were detected", "updateDeps"),
 		)
 	}
-	if a.CheckGeneratedCode {
+	if len(a.GenerateTarget) > 0 {
 		stages = append(
 			stages,
-			TargetAsStage("generate"),
+			TargetAsStage(a.GenerateTarget),
 			GitDiffStage("Out of sync generated code was detected", "generate"),
 		)
 	}
-	if a.CheckUnitTests {
+	if len(a.TestTarget) > 0 {
 		stages = append(
 			stages,
-			TargetAsStage("test"),
+			TargetAsStage(a.TestTarget),
 		)
 	}
 	stages = append(stages, a.PostStages...)
