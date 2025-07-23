@@ -210,7 +210,7 @@ func RegisterBsBuildTarget()
 Registers a target that rebuilds the build system. This is often useful when changes are made to the build system of a project.
 
 <a name="RegisterCommonGoCmdTargets"></a>
-## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L308>)
+## func [RegisterCommonGoCmdTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L311>)
 
 ```go
 func RegisterCommonGoCmdTargets(g *goTargets)
@@ -219,7 +219,7 @@ func RegisterCommonGoCmdTargets(g *goTargets)
 Registers some common go cmds as targets. See the [MergegateTargets](<#MergegateTargets>) struct for details about the available targets that can be added.
 
 <a name="RegisterGoEnumTargets"></a>
-## func [RegisterGoEnumTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L191>)
+## func [RegisterGoEnumTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L194>)
 
 ```go
 func RegisterGoEnumTargets()
@@ -242,7 +242,7 @@ Registers two targets:
 2. The second target will install gomarkdoc using go intstall
 
 <a name="RegisterMergegateTarget"></a>
-## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L407>)
+## func [RegisterMergegateTarget](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L410>)
 
 ```go
 func RegisterMergegateTarget(a MergegateTargets)
@@ -251,7 +251,7 @@ func RegisterMergegateTarget(a MergegateTargets)
 Registers a mergegate target that will perform the actions that are defined by the [MergegateTargets](<#MergegateTargets>) struct. See the [MergegateTargets](<#MergegateTargets>) struct for details about the available stages the mergegate target can run.
 
 <a name="RegisterSqlcTargets"></a>
-## func [RegisterSqlcTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L148>)
+## func [RegisterSqlcTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L151>)
 
 ```go
 func RegisterSqlcTargets(pathInRepo string)
@@ -362,7 +362,7 @@ func Touch(name string) error
 A utility function that creates but does not open a file and logs the file's path.
 
 <a name="MergegateTargets"></a>
-## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L375-L402>)
+## type [MergegateTargets](<https://github.com/barbell-math/smoothbrain-bs/blob/main/targets.go#L378-L405>)
 
 Defines all possible stages that can run in a mergegate target.
 
